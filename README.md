@@ -8,3 +8,4 @@ It uses state-of-the art open source tools and frameworks such as Zookeeper, Kaf
 Each project in the repo is described briefly below:
 
 - **zookeeper-client-test** -> A quick "Hello World" program to illustrate the use of ZooKeeper client Java API. It includes connection/disconnection to zookeeper server and zookeeper event handling.
+- **leader-election** -> Demonstrates **Leader Election** algorithm in  a distributed systems using Zookeeper cluster.
