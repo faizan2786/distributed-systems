@@ -8,11 +8,12 @@
     <artifactId>leader-election</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <properties>
-        <maven.compiler.source>20</maven.compiler.source>
-        <maven.compiler.target>20</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+    <!-- define parent (top-level) pom - required to compile this project separately -->
+    <parent>
+        <groupId>distributed.systems</groupId>
+        <artifactId>ds-package</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
 
     <build>
         <plugins>
@@ -41,25 +42,5 @@
             </plugin>
         </plugins>
     </build>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.zookeeper</groupId>
-            <artifactId>zookeeper</artifactId>
-            <version>3.8.1</version>
-        </dependency>
-        <dependency>
-            <!-- SLF4J logger api dependency (used by Zookeeper API) listed explicitly -->
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>2.0.5</version>
-        </dependency>
-        <dependency>
-            <!-- Log4j dependency used as Binder (backend) logger for SLF4J -->
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>2.0.5</version>
-        </dependency>
-    </dependencies>
 
 </project>
