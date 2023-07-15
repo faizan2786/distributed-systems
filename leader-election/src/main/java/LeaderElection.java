@@ -3,7 +3,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-public class LeaderElection implements Watcher {
+public class LeaderElection implements Watcher { // define a Zookeeper Watcher(even-handler) class
     private static final String ZOOKEEPER_ADDRESS = "localhost:2181";
     private static final int SESSION_TIMEOUT = 3000; // in millisecond
 
@@ -23,7 +23,8 @@ public class LeaderElection implements Watcher {
     }
 
     private void connectToZookeeper() throws IOException {
-        this.zookeeper = new ZooKeeper(ZOOKEEPER_ADDRESS, SESSION_TIMEOUT, this);
+        this.zookeeper = new ZooKeeper(ZOOKEEPER_ADDRESS, SESSION_TIMEOUT, this);   // pass the current class as the watcher
+                                                                                            // to watch (serve callbacks) for ZK events
     }
 
     // wait for zookeeper event threads to finish
@@ -34,17 +35,18 @@ public class LeaderElection implements Watcher {
         }
     }
 
-    // This method creates a new znode with a new sequence id assigned by the ZK server.
+    // This method creates a new znode (i.e. a ZK client) with a new sequence id assigned by the ZK server.
     private void createZNode() throws InterruptedException, KeeperException {
         String znodePrefix = ZNODE_ROOT + "/c_"; // full path prefix for creating new modes ("c_" = child node)
         String znodeFullPath = zookeeper.create(znodePrefix, new byte[]{}, ZooDefs.Ids.OPEN_ACL_UNSAFE,
-                                            CreateMode.EPHEMERAL_SEQUENTIAL); // creates a new temporary (ephemeral) znode using given prefix appending with a new sequence id
+                                            CreateMode.EPHEMERAL_SEQUENTIAL);   // creates a new temporary (ephemeral) znode
+                                                                                // using given prefix and appending it with a new sequence id
 
         System.out.println("znode full name: " + znodeFullPath);
-        this.currentZnodeName = znodeFullPath.replace(ZNODE_ROOT + "/", ""); // extract only the name (without the full path)
+        this.currentZnodeName = znodeFullPath.replace(ZNODE_ROOT + "/", ""); // extract only the name (without its path)
     }
 
-    // The newly created znode automatically nominates itself as a candidate.
+    // The newly created client (a znode) automatically nominates itself as a candidate.
     // If there is NOT any existing znode available with a smaller sequence,
     // then the created znode will be the leader.
     private void electLeader() throws InterruptedException, KeeperException {
