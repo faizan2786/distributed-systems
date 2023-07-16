@@ -4,15 +4,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>distributed.systems</groupId>
+    <groupId>module.zookeeper</groupId>
     <artifactId>zookeeper-client-test</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <!-- define parent (top-level) pom - required to compile this project separately -->
     <parent>
-        <groupId>distributed.systems</groupId>
-        <artifactId>ds-package</artifactId>
+        <groupId>module.zookeeper</groupId>
+        <artifactId>zk-package</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
