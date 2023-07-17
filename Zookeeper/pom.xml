@@ -18,6 +18,7 @@
     <modules>
         <module> leader-election </module>
         <module> zookeeper-client-test </module>
+        <module> leader-failover </module>
     </modules>
 
     <properties>
