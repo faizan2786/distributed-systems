@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>module.zookeeper</groupId>
-    <artifactId>leader-failover</artifactId>
+    <artifactId>event-watcher</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <!-- define parent (top-level) pom - required to compile this project separately -->
