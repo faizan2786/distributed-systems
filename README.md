@@ -5,8 +5,12 @@ This repository contains individual projects (built using [Maven](https://maven.
 
 The repo is created to demonstrate various *Distributed Systems concepts* in action using **Java**. It borrows examples and tutorials from the highly recommended **Udemy course** [Distributed Systems & Cloud Computing with Java](https://www.udemy.com/course/distributed-systems-cloud-computing-with-java/). It uses state-of-the art open source tools and frameworks such as Zookeeper, Kafka, Hadoop etc.that are widely used in the industry. 
 
-## Some Distributed system terminology:
+## What is a Distributed system ?
+Distributed system is a collection of programs (multiple instances of same application or multple applications or both) running on separate machines and communicating over network to achieve a common goal.
 
+## Some Distributed system terminology:
+- **Node** -> A single physical machine in a distributed system
+- **Cluster** -> Collection of nodes, generally running a **same** service or task.
 - **Fault-detection** -> Ability of a distributed system to detect when a node in a cluster has crashed or unreachable.
 - **Fault-tolerance** -> Ability of a system to detect faults **and** automatically adjust the cluster without affecting its functionality.
 - **Highly-available** -> A system is highly available if there is **always** at-least a node running and serving the goal of the system.\
