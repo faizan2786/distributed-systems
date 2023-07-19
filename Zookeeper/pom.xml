@@ -19,7 +19,7 @@
         <module> leader-election </module>
         <module> zookeeper-client-test </module>
         <module> event-watcher </module>
-        <module> leader-failover </module>
+        <module> fault-tolerance </module>
     </modules>
 
     <properties>

@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-public class LeaderFailOver implements Watcher { // define a Zookeeper Watcher(event-handler) class
+public class FaultTolerance implements Watcher { // define a Zookeeper Watcher(event-handler) class
     private static final String ZOOKEEPER_ADDRESS = "localhost:2181";
     private static final int SESSION_TIMEOUT = 3000; // in milliseconds
 
@@ -15,7 +15,7 @@ public class LeaderFailOver implements Watcher { // define a Zookeeper Watcher(e
 
     // NOTE - Don't forget to create the /election ZNode using zkCli.sh before executing this method
     public static void main(String[] args) throws IOException, InterruptedException, KeeperException {
-        LeaderFailOver election = new LeaderFailOver();
+        FaultTolerance election = new FaultTolerance();
         election.connectToZookeeper();
         election.createZNode();
         election.electLeaderWithFailOver();

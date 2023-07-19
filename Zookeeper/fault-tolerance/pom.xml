@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>module.zookeeper</groupId>
-    <artifactId>leader-failover</artifactId>
+    <artifactId>fault-tolerance</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <!-- define parent (top-level) pom - required to compile this project separately -->
@@ -32,7 +32,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>LeaderFailOver</mainClass>
+                            <mainClass>FaultTolerance</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
