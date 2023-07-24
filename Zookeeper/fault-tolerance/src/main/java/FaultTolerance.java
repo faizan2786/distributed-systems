@@ -1,14 +1,12 @@
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
+import zk.classes.ZKConnection;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
 public class FaultTolerance implements Watcher { // define a Zookeeper Watcher(event-handler) class
-    private static final String ZOOKEEPER_ADDRESS = "localhost:2181";
-    private static final int SESSION_TIMEOUT = 3000; // in milliseconds
-
     private static final String ZNODE_ROOT = "/election";
     private ZooKeeper zookeeper; // zookeeper client object
     private String currentZnodeName;  // current znode's name
@@ -25,8 +23,7 @@ public class FaultTolerance implements Watcher { // define a Zookeeper Watcher(e
     }
 
     private void connectToZookeeper() throws IOException {
-        this.zookeeper = new ZooKeeper(ZOOKEEPER_ADDRESS, SESSION_TIMEOUT, this);   // pass the current class as the watcher
-                                                                                            // to watch (serve callbacks) for ZK events
+        this.zookeeper = new ZKConnection().getConnection();
     }
 
     // wait for zookeeper event threads to finish
@@ -91,21 +88,6 @@ public class FaultTolerance implements Watcher { // define a Zookeeper Watcher(e
     @Override
     public void process(WatchedEvent event) {
         switch(event.getType()) {
-            case None:
-                if (event.getState() == Event.KeeperState.SyncConnected) {// event of successful connection to zookeeper server
-                    System.out.println("-------------------------------------");
-                    System.out.println("Successfully connected to Zookeeper!");
-                    System.out.println("-------------------------------------");
-                }
-                else {
-                    synchronized (zookeeper) {
-                        System.out.println("-------------------------------------");
-                        System.out.println("Disconnection from Zookeeper event!");
-                        System.out.println("-------------------------------------");
-                        zookeeper.notifyAll(); // notify all the waiting threads to wake up (i.e. main thread in this case)
-                    }
-                }
-                break;
             case NodeDeleted:
                 try{
                     electLeaderWithFailOver();

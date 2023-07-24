@@ -16,7 +16,14 @@ Clients can subscribe to specific **events** such as creation or deletion of zno
 
 Each project in the repo is described briefly below:
 
-- `zookeeper-client-test` -> A quick "Hello World" program to illustrate the use of ZooKeeper client Java API. It includes connection/disconnection to zookeeper server and zookeeper event handling.
+- `zookeeper-connect` -> A quick "Hello World" program to illustrate the use of ZooKeeper client Java API.
+  - It defines `ZKConnection` **helper class** to handle connection/disconnection to ZooKeeper server. Other projects in this module may simply use this class to establish the connection to ZooKeeper.
+
+
 - `leader-election` -> Demonstrates **Leader Election** algorithm in  a distributed systems using a Zookeeper client cluster (by the use of **ephemeral znodes**).
+
+
 - `event-wtcher` -> This project illustrates how to use Zookeeper **Watchers** and **event triggers** to watch and get notified about changes in a specific znode's state.
+
+
 - `fault-tolerance` -> Demonstrates how to build a **simple fault-tolerant and scalable** distributed cluster using ZK.

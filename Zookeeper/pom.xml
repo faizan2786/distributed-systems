@@ -16,10 +16,11 @@
     </parent>
 
     <modules>
+        <module> zookeeper-connect </module>
         <module> leader-election </module>
-        <module> zookeeper-client-test </module>
         <module> event-watcher </module>
         <module> fault-tolerance </module>
+        <module> service-registry </module>
     </modules>
 
     <properties>
@@ -34,10 +35,16 @@
             <artifactId>zookeeper</artifactId>
             <version>3.7.1</version>
         </dependency>
+
         <dependency>
             <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>2.0.5</version>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-reload4j</artifactId>
+            <version>2.0.7</version>
         </dependency>
     </dependencies>
 
