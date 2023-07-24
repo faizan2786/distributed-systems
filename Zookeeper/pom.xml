@@ -20,6 +20,7 @@
         <module> leader-election </module>
         <module> event-watcher </module>
         <module> fault-tolerance </module>
+        <module> service-registry </module>
     </modules>
 
     <properties>

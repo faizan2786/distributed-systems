@@ -40,7 +40,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>FaultTolerance</mainClass>
+                            <mainClass>Application</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
