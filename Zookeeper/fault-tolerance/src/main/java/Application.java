@@ -19,8 +19,7 @@ public class Application {
 
     // Initialise a zookeeper cluster
     private void initCluster() throws IOException, InterruptedException, KeeperException, InsufficientResourcesException {
-        FaultTolerantCluster cluster = new FaultTolerantCluster();
-        cluster.initialiseCluster(ZNODE_ROOT);
+        FaultTolerantCluster cluster = new FaultTolerantCluster(ZNODE_ROOT);
         this.zkConnection = cluster.getConnection();
         cluster.addNewZNode();
     }

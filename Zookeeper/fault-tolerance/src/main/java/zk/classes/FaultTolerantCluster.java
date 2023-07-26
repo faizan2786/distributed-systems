@@ -14,7 +14,7 @@ public class FaultTolerantCluster implements Watcher { // define a Zookeeper Wat
     private String currentZnodeName;  // current znode's name
 
     // Initialise a zookeeper cluster with given Znode root
-    public void initialiseCluster(String znodeRoot) throws InterruptedException, KeeperException {
+    public FaultTolerantCluster(String znodeRoot) throws InterruptedException, KeeperException {
         connectToZookeeper();
         setRootZNode(znodeRoot);
     }
@@ -30,7 +30,8 @@ public class FaultTolerantCluster implements Watcher { // define a Zookeeper Wat
         }
     }
 
-    public ZooKeeper getConnection() {
+    // get zookeeper instance (in thread safe manner)
+    public synchronized ZooKeeper getConnection() {
         return zookeeper;
     }
 
@@ -46,7 +47,9 @@ public class FaultTolerantCluster implements Watcher { // define a Zookeeper Wat
         Stat stat = zookeeper.exists(rootPath, this);
         if (stat == null) {
             zookeeper.create(rootPath, new byte[]{}, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+            System.out.println("Root ZNode created!");
         }
+        System.out.println("Root path: " + rootPath);
         rootZNodePath = rootPath;
     }
 
