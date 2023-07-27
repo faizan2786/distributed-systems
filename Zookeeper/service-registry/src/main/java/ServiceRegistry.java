@@ -1,5 +1,7 @@
-import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.Level;
+
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
 import org.jetbrains.annotations.NotNull;
@@ -10,11 +12,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.log4j.Level;
-
 public class ServiceRegistry implements Watcher {
     private static final String ZNODE_ROOT = "/service_registry";
-    private static Logger logger;
+    private static final Logger logger = Logger.getLogger(ServiceRegistry.class);
     private ZooKeeper zooKeeper;
 
     private String currentZnode = ""; // name of the latest znode registered with the registry
@@ -44,9 +44,7 @@ public class ServiceRegistry implements Watcher {
 
     public ServiceRegistry() {
         // initialise logger object
-        logger = Logger.getLogger(ServiceRegistry.class);
-        logger.setLevel(Level.INFO);
-
+        PropertyConfigurator.configure(this.getClass().getResource("log4j.Registry.properties"));
         try {
 
             ZKConnection zkConn = new ZKConnection();
@@ -122,7 +120,6 @@ public class ServiceRegistry implements Watcher {
         }
         allServiceAddresses = Collections.unmodifiableList(addresses);
         logger.info("Service address book updated!");
-        System.out.println();
     }
 
     // synchronise Zookeeper event thread
