@@ -1,11 +1,11 @@
+package zk.classes;
+
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.Level;
 
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
 import org.jetbrains.annotations.NotNull;
-import zk.classes.ZKConnection;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,42 +18,21 @@ public class ServiceRegistry implements Watcher {
     private ZooKeeper zooKeeper;
 
     private String currentZnode = ""; // name of the latest znode registered with the registry
-                                      // (useful to keep internal record of all znode names in a multithreaded environment)
+                                      // (useful to keep internal record of a created znode name)
     private List<String> allServiceAddresses = null;
 
-    public static void main(String[] args) throws InterruptedException {
-        ServiceRegistry app = new ServiceRegistry();
-        Thread.sleep(100);
-        app.registerNode("127.0.0.1");
-        Thread.sleep(100);
-        app.registerNode("127.0.0.2");
-        Thread.sleep(100);
-        app.registerNode("127.0.0.3");
-        Thread.sleep(100);
-        System.out.println("Node addresses: " + app.getAllServiceAddresses());
-        System.out.println();
+    // Service registry needs:
+    // Zookeeper connection object and
+    // Class loader of the client's class to locate the log4j.properties files for clients.
+    public ServiceRegistry(ZooKeeper zooKeeper, ClassLoader classLoader) {
 
-        app.unRegisterNode();  // unregister last registered znode
-        Thread.sleep(100);
-        app.registerNode("127.0.0.4");
-        Thread.sleep(100);
-        System.out.println("Node addresses: " + app.getAllServiceAddresses());
-
-        app.waitForZKThread();
-    }
-
-    public ServiceRegistry() {
         // initialise logger object
-        PropertyConfigurator.configure(this.getClass().getResource("log4j.Registry.properties"));
-        try {
+        PropertyConfigurator.configure(classLoader.getResource("registry.log4j.properties"));
 
-            ZKConnection zkConn = new ZKConnection();
-            this.zooKeeper = zkConn.getConnection();
+        this.zooKeeper = zooKeeper;
+        try {
             setupRootZNode();
             updateAddresses();
-
-        } catch (IOException  e) {
-            e.printStackTrace();
         } catch (InterruptedException | KeeperException e) {
             throw new RuntimeException(e);
         }
@@ -87,6 +66,7 @@ public class ServiceRegistry implements Watcher {
             if (currentZnode != null && zooKeeper.exists(currentZnode, false) != null) {
                 zooKeeper.delete(currentZnode, -1);
                 logger.info("Znode " + currentZnode + " has been removed from the registry!");
+                System.out.println("node unregistered from the registry!");
                 this.currentZnode = null;
             }
         } catch (InterruptedException | KeeperException e) {
@@ -120,13 +100,8 @@ public class ServiceRegistry implements Watcher {
         }
         allServiceAddresses = Collections.unmodifiableList(addresses);
         logger.info("Service address book updated!");
-    }
-
-    // synchronise Zookeeper event thread
-    private void waitForZKThread() throws InterruptedException {
-        synchronized (zooKeeper) {
-            zooKeeper.wait();
-        }
+        logger.info("Addresses are: " + allServiceAddresses);
+        logger.info("");
     }
 
     @Override

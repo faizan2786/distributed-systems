@@ -5,14 +5,14 @@ import javax.naming.InsufficientResourcesException;
 import java.io.IOException;
 import org.apache.zookeeper.KeeperException;
 
-public class Application {
+public class FaultTolerantClusterMain {
 
     private static final String ZNODE_ROOT = "/election";
     private ZooKeeper zkConnection;
 
     public static void main(String[] args) throws IOException, InterruptedException, KeeperException, InsufficientResourcesException {
 
-        Application app = new Application();
+        FaultTolerantClusterMain app = new FaultTolerantClusterMain();
         app.initCluster();
         app.waitForEventThread();
     }

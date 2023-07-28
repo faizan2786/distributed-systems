@@ -40,7 +40,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>ServiceRegistry</mainClass>
+                            <mainClass>FaultTolerantClusterMain</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
