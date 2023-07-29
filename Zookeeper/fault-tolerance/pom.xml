@@ -40,7 +40,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>FaultTolerantClusterMain</mainClass>
+                            <mainClass>ClusterWithFailOver</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

@@ -4,42 +4,27 @@ import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
 
 import javax.naming.InsufficientResourcesException;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+// A utility class to manage a fault-tolerant cluster that
+// also supports callbacks for service registry
 public class FaultTolerantCluster implements Watcher { // define a Zookeeper Watcher(event-handler) class
     private String rootZNodePath;
     private ZooKeeper zookeeper; // zookeeper client object
     private String currentZnodeName;  // current znode's name
 
+    private OnElectionCallBack electionCallback;
+
     // Initialise a zookeeper cluster with given Znode root
-    public FaultTolerantCluster(String znodeRoot) throws InterruptedException, KeeperException {
-        connectToZookeeper();
-        setRootZNode(znodeRoot);
-    }
-
-    // establish connection to zookeeper and return the connection object
-    public void connectToZookeeper() {
-        if (zookeeper == null) {
-            try {
-                this.zookeeper = new ZKConnection().getConnection();
-            } catch (IOException ex) {
-                System.out.println("Can not connect to ZooKeeper server!");
-            }
-        }
-    }
-
-    // get zookeeper instance (in thread safe manner)
-    public synchronized ZooKeeper getConnection() {
-        return zookeeper;
+    public FaultTolerantCluster(String clusterRootName, ZooKeeper zooKeeper, OnElectionCallBack electionCallback) throws InterruptedException, KeeperException {
+        this.zookeeper = zooKeeper;
+        this.electionCallback = electionCallback;
+        setRootZNode(clusterRootName);
     }
 
     // set root-level znode for the cluster
-    public void setRootZNode(String rootName) throws InterruptedException, KeeperException {
-
-        // connect to zookeeper if not connected already
-        connectToZookeeper();
+    private void setRootZNode(String rootName) throws InterruptedException, KeeperException {
 
         final String rootPath = rootName.startsWith("/") ? rootName : "/" + rootName; // set the root path
 
@@ -60,11 +45,7 @@ public class FaultTolerantCluster implements Watcher { // define a Zookeeper Wat
     // This method creates a new znode under the root with a new sequence id assigned by the ZK server.
     // It also queries for the leader or a watcher node in the existing cluster after creating one
     // returns - newly created znode's name
-    public String addNewZNode() throws InterruptedException, KeeperException, InsufficientResourcesException {
-
-        if (rootZNodePath.isEmpty()) {
-            throw new InsufficientResourcesException("Can not create a new znode! Please set the Root ZNode first!");
-        }
+    public String addNewNode() throws InterruptedException, KeeperException {
 
         String znodePrefix = rootZNodePath + "/c_"; // full path prefix for creating new modes ("c_" = child node)
         String znodeFullPath = zookeeper.create(znodePrefix, new byte[]{}, ZooDefs.Ids.OPEN_ACL_UNSAFE,
@@ -78,17 +59,6 @@ public class FaultTolerantCluster implements Watcher { // define a Zookeeper Wat
         return currentZnodeName;
     }
 
-    /**
-    Failure detection:
-        - Every non-leader client will repeatedly watch its predecessor i.e. a znode with one sequence id smaller,
-        using ZK's exists() event trigger.
-        - If the watched znode dies, ZK will notify the current client, and it will subscribe to watch the znode before
-        - If there is no more znode with the smaller seq. id means that the current client is the smallest and
-        hence, it will become the leader.
-        - In such mechanism, any number of znode can join or disconnect from the client cluster.
-        - As long as there is only even one client active, the cluster will stay alive.
-        - Hence, we can say that such cluster is "horizontally (dynamically) scalable" and "fault-tolerant"
-     */
     private void electLeaderWithFailOver() throws InterruptedException, KeeperException {
         Stat stats = null;
         String predecessorName = "";
@@ -101,6 +71,7 @@ public class FaultTolerantCluster implements Watcher { // define a Zookeeper Wat
             String smallestNode = children.get(0);
             if (smallestNode.equals(currentZnodeName)) {
                 System.out.println("I am the leader!");
+                electionCallback.onLeader();
                 return;
             } else {
                 System.out.println("I am NOT the leader.\nThe leader is: " + smallestNode);
@@ -111,7 +82,7 @@ public class FaultTolerantCluster implements Watcher { // define a Zookeeper Wat
                 stats = zookeeper.exists(rootZNodePath + "/" + predecessorName, this); // watch the predecessor
             }
         }
-
+        electionCallback.onFollower();
         System.out.println("Watching node: " + predecessorName);
         System.out.println();
     }

@@ -17,7 +17,7 @@ public class ServiceRegistry implements Watcher {
     private static final Logger logger = Logger.getLogger(ServiceRegistry.class);
     private ZooKeeper zooKeeper;
 
-    private String currentZnode = ""; // name of the latest znode registered with the registry
+    private String currentZnode; // name of the latest znode registered with the registry
                                       // (useful to keep internal record of a created znode name)
     private List<String> allServiceAddresses = null;
 
@@ -32,7 +32,6 @@ public class ServiceRegistry implements Watcher {
         this.zooKeeper = zooKeeper;
         try {
             setupRootZNode();
-            updateAddresses();
         } catch (InterruptedException | KeeperException e) {
             throw new RuntimeException(e);
         }
@@ -49,6 +48,10 @@ public class ServiceRegistry implements Watcher {
     // with the service registry
     public void registerNode(@NotNull String hostName) {
         try {
+            if (this.currentZnode != null) {
+                System.out.println("Already registered to service registry");
+                return;
+            }
             this.currentZnode = zooKeeper.create(ZNODE_ROOT + "/n_", hostName.getBytes(),
                                                         ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
             logger.info("New znode created: " + currentZnode);
@@ -74,11 +77,19 @@ public class ServiceRegistry implements Watcher {
         }
     }
     public synchronized List<String> getAllServiceAddresses() {
+        if (allServiceAddresses == null) {
+            try {
+                updateAddresses();
+            } catch ( InterruptedException | KeeperException e) {
+                e.printStackTrace();
+            }
+        }
         return allServiceAddresses;
     }
 
     // update (and cache) list of addresses for all active registered services
-    private synchronized void updateAddresses() throws InterruptedException, KeeperException {
+    // Note: while doing so, this method also registers for any change in root's children (i.e. calling getChildren() on root)
+    public synchronized void updateAddresses() throws InterruptedException, KeeperException {
 
         List<String> children = zooKeeper.getChildren(ZNODE_ROOT, this);
 
@@ -100,7 +111,7 @@ public class ServiceRegistry implements Watcher {
         }
         allServiceAddresses = Collections.unmodifiableList(addresses);
         logger.info("Service address book updated!");
-        logger.info("Addresses are: " + allServiceAddresses);
+        System.out.println("service addresses are: " + allServiceAddresses);
         logger.info("");
     }
 

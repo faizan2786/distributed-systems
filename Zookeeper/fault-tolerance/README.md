@@ -33,8 +33,8 @@ As long as there is at least one node alive in the cluster, our system will be a
 
 Hence, we can **summarise** our failure detection and leader reelection process (in **pseudocode**) as follows:
 
-- The `LeaderElectionAndFailover()` method:
-  - Until we are leader or we found a valid predecessor:
+- The `electLeaderWithFailOver()` method:
+  - Until we are leader, or we found a valid predecessor:
     - Get all children
     - Sort the children by their sequence id
     - If minimum seq id = our seq. id then "we are the leader", `return`.
@@ -43,7 +43,7 @@ Hence, we can **summarise** our failure detection and leader reelection process 
     
 
 - On `NodeDeleted` event: 
-  - Call `LeaderElectionAndFailover()` method
+  - Call `electLeaderWithFailOver()` method
 
 ## How to test:
 - Go to the current project directory and run `mvn package` command. 
