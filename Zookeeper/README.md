@@ -27,3 +27,6 @@ Each project in the repo is described briefly below:
 
 
 - `fault-tolerance` -> Demonstrates how to build a **simple fault-tolerant and scalable** distributed cluster using ZK.
+
+- `service-registry` -> This module implements a fully-functional **service registry application** using ZooKeeper. A **service registry** is a service that keeps record of addresses of all available worker nodes in the cluster.\
+  It also demonstrates the application in action with a _fault-tolerant leader-follower system_ similar to the one in `fault-tolerance` project;.
