@@ -23,7 +23,7 @@ Each project in the repo is described briefly below:
 - `leader-election` -> Demonstrates **Leader Election** algorithm in  a distributed systems using a Zookeeper client cluster (by the use of **ephemeral znodes**).
 
 
-- `event-wtcher` -> This project illustrates how to use Zookeeper **Watchers** and **event triggers** to watch and get notified about changes in a specific znode's state.
+- `event-watcher` -> This project illustrates how to use Zookeeper **Watchers** and **event triggers** to watch and get notified about changes in a specific znode's state.
 
 
 - `fault-tolerance` -> Demonstrates how to build a **simple fault-tolerant and scalable** distributed cluster using ZK.
